@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres_javaronok
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart: unless-stopped
+
+
+  aura-bot:
+    build: .
+    container_name: aura-bot
+    env_file: .env
+    restart: always
+    depends_on:
+      - postgres
+volumes:
+  pgdata:

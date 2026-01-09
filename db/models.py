@@ -7,4 +7,4 @@ from tortoise.models import Model
 class User(Model):
     id = fields.BigIntField(primary_key=True)
     university = fields.CharField(default="", max_length=64)
-    gtoup = fields.CharField(default="", max_length=64)
+    group_name = fields.CharField(default="", max_length=64)

@@ -19,9 +19,9 @@ storage = MemoryStorage()
 async def process_start_command(message: Message, state: FSMContext):
     exists = await models.User.exists(id=message.from_user.id)
     if exists:
-        await message.answer(text=LEXICON_RU["exists"], parse_mode = ParseMode.HTML)
+        await message.answer(text=LEXICON_RU["exists"].format(username = message.from_user.first_name), parse_mode = ParseMode.HTML)
     else:
-        await message.answer(text=LEXICON_RU["start"], reply_markup=yes_no)
+        await message.answer(text=LEXICON_RU["start"].format(username = message.from_user.first_name), reply_markup=yes_no)
 
 
 @router.message(

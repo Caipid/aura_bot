@@ -1,11 +1,17 @@
+from datetime import date
+
+import pytz
 from aiogram.types import (
                            InlineKeyboardButton,
                            InlineKeyboardMarkup,
                            KeyboardButton,
                            ReplyKeyboardMarkup,
 )
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from lexicon.lexicon import LEXICON_RU
+
+tz = pytz.timezone("Asia/Novosibirsk")
 
 button_yes = KeyboardButton(text=LEXICON_RU["yes_button"])
 button_no = KeyboardButton(text=LEXICON_RU["no_button"])
@@ -15,6 +21,16 @@ button_altgtu = InlineKeyboardButton(text="🛠️ АлтГТУ", callback_data=
 
 button_unv  = InlineKeyboardButton(text="🎓Вуз", callback_data="Вуз")
 button_group = InlineKeyboardButton(text="📚Группа", callback_data="Группа")
+
+button_timetable_today = InlineKeyboardButton(text = "📅 Сегодня", callback_data="today")
+button_timetable_tommorow = InlineKeyboardButton(text = "📅 Завтра", callback_data="tomorrow")
+button_timetable_week = InlineKeyboardButton(text = "🗓️ Неделя", callback_data="week")
+button_timetable_two_week = InlineKeyboardButton(text = "🗓️ Две недели", callback_data="two_week")
+
+builder = InlineKeyboardBuilder()
+builder.row(button_timetable_today, button_timetable_tommorow)
+builder.row(button_timetable_week, button_timetable_two_week)
+timetable_keyb = builder.as_markup()
 
 change_data_keyb = InlineKeyboardMarkup(
     inline_keyboard=[[button_unv, button_group]],

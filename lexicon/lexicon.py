@@ -12,7 +12,7 @@ LEXICON_RU: dict[str, str] = {
               "Узнать расписание - /timetable 🗓️\n"
               "Изменить данные - /changedata ✏️\n"
               "Список команд - /help❤🦜",
-    "profile": "Вот что Жаворонок 🦜 знает о {username}:👀📖\n\n",
+    "profile": "Вот что Жаворонок 🦜 знает о {username}👀📖\n\n",
     "change": "Что нужно поменять 🔄🛠️:",
     "yes_button": "✅👍 Давай!",
     "no_button": "❌🙁 В другой раз",

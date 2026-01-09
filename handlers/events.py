@@ -12,6 +12,7 @@ from keyboards.keyboards import (
     button_group,
     button_unv,
     change_data_keyb,
+    timetable_keyb,
     university_keyb,
 )
 from lexicon.lexicon import LEXICON_RU
@@ -36,18 +37,25 @@ async def cancel_command(message: Message):
 @router.message(Command(commands="profile"))
 async def profile_command(message: Message):
     user = await models.User.get(id=message.from_user.id)
-    user.save()
-    university = user.get_or_none(id=message.from_user.id)
-    group_name = user.get_or_none(id=message.from_user.id)
+
+    university = user.university or "❌ Не указан"
+    group_name = user.group_name or "❌ Не указана"
+
     await message.answer(
-        text= f"{LEXICON_RU["profile"]}+ \n🏫 Вуз: {university}\n📚 Группа: {group_name}\n\n✏️ Изменить данные - /changedata", parse_mode= ParseMode.HTML
+        text=(
+            f"{LEXICON_RU['profile'].format(username = message.from_user.first_name)}"
+            f"🏫 Вуз: {university}\n"
+            f"📚 Группа: {group_name}\n\n"
+            f"✏️ Изменить данные — /changedata"
+        ),
+        parse_mode=ParseMode.HTML
     )
 
 
 @router.message(Command(commands="changedata"))
 async def changedata(message: Message):
     user = await models.User.get(id=message.from_user.id)
-    user.save()
+    await user.save()
     await message.answer(
         text=LEXICON_RU["change"], reply_markup=change_data_keyb
     )
@@ -64,7 +72,7 @@ async def changeunv(callback: CallbackQuery, state: FSMContext):
 async def changeunv_callback(callback: CallbackQuery, state: FSMContext):
     user = await models.User.get(id=callback.from_user.id)
     user.university = callback.data
-    user.save()
+    await user.save()
     await state.set_state(default_state)
     await callback.message.answer(LEXICON_RU["complete"])
     await callback.answer()
@@ -82,12 +90,12 @@ async def changegroup(callback: CallbackQuery, state: FSMContext):
 async def changegroup_message(message : Message, state: FSMContext):
     user = await models.User.get(id=message.from_user.id)
     user.group_name = message.text
-    user.save()
+    await user.save()
     await state.set_state(default_state)
     await message.answer(LEXICON_RU["complete"])
     await message.answer()
 
-@router.message(Command(commands= "timetabel"))
+@router.message(Command(commands= "timetable"))
 async def choice_timetable(message : Message):
     user = await models.User.get(id=message.from_user.id)
-    await message.answer("Скоро сдесь будет расписание!")
+    await message.answer("Скоро сдесь будет расписание!",reply_markup=timetable_keyb)

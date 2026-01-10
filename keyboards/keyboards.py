@@ -22,14 +22,16 @@ button_altgtu = InlineKeyboardButton(text="🛠️ АлтГТУ", callback_data=
 button_unv  = InlineKeyboardButton(text="🎓Вуз", callback_data="Вуз")
 button_group = InlineKeyboardButton(text="📚Группа", callback_data="Группа")
 
-button_timetable_today = InlineKeyboardButton(text = "📅 Сегодня", callback_data="today")
-button_timetable_tommorow = InlineKeyboardButton(text = "📅 Завтра", callback_data="tomorrow")
-button_timetable_week = InlineKeyboardButton(text = "🗓️ Неделя", callback_data="week")
-button_timetable_two_week = InlineKeyboardButton(text = "🗓️ Две недели", callback_data="two_week")
+button_timetable_today = InlineKeyboardButton(text = "📅 Сегодня", callback_data= "1")
+button_timetable_tommorow = InlineKeyboardButton(text = "📅 Завтра", callback_data= "2")
+button_timetable_week = InlineKeyboardButton(text = "🗓️ Неделя", callback_data= "3")
+button_timetable_two_week = InlineKeyboardButton(text = "🗓️ Две недели", callback_data= "4")
+button_timetable_userdate = InlineKeyboardButton(text = "📅 Своя дата", callback_data= "5")
 
 builder = InlineKeyboardBuilder()
 builder.row(button_timetable_today, button_timetable_tommorow)
 builder.row(button_timetable_week, button_timetable_two_week)
+builder.row(button_timetable_userdate)
 timetable_keyb = builder.as_markup()
 
 change_data_keyb = InlineKeyboardMarkup(

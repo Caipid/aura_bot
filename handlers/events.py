@@ -1,6 +1,5 @@
 from datetime import date, timedelta, timezone
 
-import pytz
 from aiogram import F, Router
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, StateFilter
@@ -9,6 +8,7 @@ from aiogram.fsm.state import default_state
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import CallbackQuery, Message
 
+import parser
 from db import models
 from fsm import FSM_state
 from keyboards.keyboards import (
@@ -109,13 +109,30 @@ async def changegroup_message(message : Message, state: FSMContext):
 async def choice_timetable(message : Message):
     await message.answer("Выбери дату и Жаворонок🦜 подскажет расписание⏰📅🕊️! \n\n\nПередумал смотреть😥💔,\nСкажи Жаворонку 🦜 - /cancel", parse_mode= ParseMode.HTML,reply_markup=timetable_keyb)
 
+
+
+
+
+
+
 @router.callback_query(F.data == button_timetable_today.callback_data)
 async def timetable_today(callback: CallbackQuery):
+    user = await models.User.get(id=callback.from_user.id) #активная сессия
     data_timetable = date.today().strftime("%d.%m.%Y") # разворот даты
     today = date.today().isoweekday()
-    user = await models.User.get(id=callback.from_user.id)
     await callback.message.answer(LEXICON_RU["timetable_ready"].format(date = data_timetable, weekday = days[str(today)] ), parse_mode= ParseMode.HTML)
     await callback.answer()
+
+
+
+
+
+
+
+
+
+
+
 
 
 @router.callback_query(F.data == button_timetable_tommorow.callback_data)
@@ -126,15 +143,33 @@ async def timetable_tommorow(callback: CallbackQuery):
     await callback.message.answer(LEXICON_RU["timetable_ready"].format(date = data_timetable, weekday = days[str(today)] ), parse_mode= ParseMode.HTML)
     await callback.answer()
 
+
+
+
+
 @router.callback_query(F.data == button_timetable_week.callback_data)
-async def timetable_week(callback: CallbackQuery):
+async def timetable_week(callback: CallbackQuery, ):
+    user = await models.User.get(id=callback.from_user.id)
     data_timetable_start = date.today().strftime("%d.%m.%Y")
     data_timetable_end = (date.today() + timedelta(days=7)).strftime("%d.%m.%Y")
     day_start = date.today().isoweekday()
     day_end = (date.today() + timedelta(days=7)).isoweekday()
     await callback.message.answer(LEXICON_RU["timetable_week"].format(date = data_timetable_start, weekday = days[str(day_start)],
                                                                        date2 = data_timetable_end, weekday2 = days[str(day_end)] ), parse_mode= ParseMode.HTML)
+
+    timetable = await parser.get_data(2,data_timetable_start,user.group_name)
+    for lesson in timetable:
+        text = LEXICON_RU["timetable_week"].format(date = data_timetable_start, weekday = days[str(day_start)],
+                                                                       date2 = data_timetable_end, weekday2 = days[str(day_end)] )
+        + LEXICON_RU["\n\nПервая Пара:"].format(discipline=lesson["discipline"])
+        + LEXICON_RU["timetable"].format(discipline=lesson["discipline"])
+        + LEXICON_RU["timetable"].format(discipline=lesson["discipline"])
+        + LEXICON_RU["timetable"].format(discipline=lesson["discipline"])
+        + LEXICON_RU["timetable"].format(discipline=lesson["discipline"])
+        await callback.message.answer(text, parse_mode=ParseMode.HTML)
     await callback.answer()
+
+
 
 @router.callback_query(F.data == button_timetable_two_week.callback_data)
 async def timetable_two_week(callback: CallbackQuery):

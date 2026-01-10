@@ -1,14 +1,17 @@
 import asyncio
 import logging
 
+import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
 from tortoise import Tortoise
 
 from config.config import Config, load_config
 from handlers import events, other, start
+from http_client import close_session
 
 logger = logging.getLogger(__name__)
 
@@ -35,18 +38,21 @@ async def main():
         format=config.log.format,
     )
     logger.info("Starting bot")
+
     bot = Bot(
         token=config.bot.token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
     dp = Dispatcher()
-
     dp.include_router(start.router)
     dp.include_router(events.router)
     dp.include_router(other.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await set_main_menu(bot)
-    await dp.start_polling(bot)
+    try:
+        await dp.start_polling(bot)
+    finally:
+        await close_session()
 
 asyncio.run(main())

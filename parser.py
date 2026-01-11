@@ -14,3 +14,15 @@ async def get_data(select_type,schedule_date,group):
         data = await resp.json()
     schedule = data.get("schedule", [])
     return schedule
+async def get_data_for_month(select_type,schedule_month,group):
+    session = await get_session()
+    payload = {
+    "institute": 1,
+    "select_type": select_type,
+    "schedule_month": schedule_month,
+    "group": group
+    }
+    async with session.post(url, data=payload, headers=session.headers) as resp:
+        data = await resp.json()
+    schedule = data.get("schedule", [])
+    return schedule

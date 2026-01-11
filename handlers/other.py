@@ -9,4 +9,4 @@ async def send_echo(message: Message):
     try:
         await message.reply(chat_id=message.chat.id)
     except TypeError:
-        await message.reply(text='Жаворонок еще не видал такого! Для списка команд - /help', parse_mode= ParseMode.HTML)
+        await message.reply(text="🦉 Упс! Жаворонок ещё не видел такого 😅\n" + "📜 Список всех команд — /help", parse_mode= ParseMode.HTML)

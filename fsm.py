@@ -6,3 +6,4 @@ class FSM_state(StatesGroup):
     fill_group = State()  # Состояние ожидания выбора пола
     change_university = State()
     change_group = State()
+    custom_data = State()
